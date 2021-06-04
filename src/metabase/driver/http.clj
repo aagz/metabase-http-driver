@@ -59,15 +59,15 @@
                      :schema (:schema table-def)}))}))
 
 (defmethod driver/describe-table :http [_ database table]
-  (let [table-def  (database->table-def database (:name table))]
-    {:name   (:name table-def)
-     :schema (:schema table-def)
-     :fields (set (for [[idx field] (map-indexed vector (:fields table-def))]
-                    {:name          (:name field)
-                     :database-type (:type field)
-                     :base-type     (or (:base_type field)
-                                        (json-type->base-type (keyword (:type field))))
-                     :database-position idx}))}))
+(let [table-def  (database->table-def database (:name table))]
+  {:name   (:name table-def)
+    :schema (:schema table-def)
+    :fields (set (for [[idx field] (map-indexed vector (:fields table-def))]
+                  {:name          (:name field)
+                    :database-type (:type field)
+                    :base-type     (or (:base_type field)
+                                      (json-type->base-type (keyword (:type field))))
+                    :database-position idx}))}))
 
 (defmethod driver/mbql->native :http [_ query]
   (let [database    (qp.store/database)
